@@ -1,3 +1,4 @@
+import {useRef} from 'react';
 import {
   IonApp,
   IonContent,
@@ -31,8 +32,23 @@ import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
 const App: React.FC = () => {
-  const handleRefresh = () => {};
-  const calculateBMI=()=>{}
+  const height = useRef<HTMLIonInputElement>(null);//supports generics, same as of java
+  const weight = useRef<HTMLIonInputElement>(null);
+  const handleRefresh = () => {
+    
+  };
+  const calculateBMI=()=>{
+    const enteredHeight = height.current?.value;//special syntax of typescript
+    const enteredWeight = weight.current!.value;//it is guarrantied that there will always be a value
+    
+    //refernces are surely not null but cannot say acout the values
+    if(!enteredHeight||!enteredWeight)
+    return;
+
+    const bmi = +enteredWeight/(+enteredHeight* +enteredHeight);
+    console.log(bmi);
+    console.log('After changes');
+  }
   return (
     <IonApp>
       <IonHeader>
@@ -46,7 +62,7 @@ const App: React.FC = () => {
             <IonCol>
               <IonItem>
                 <IonLabel position="floating">Weight</IonLabel>
-                <IonInput id="weight"></IonInput>
+                <IonInput ref={weight}></IonInput>
               </IonItem>
             </IonCol>
           </IonRow>
@@ -54,13 +70,13 @@ const App: React.FC = () => {
             <IonCol>
               <IonItem>
                 <IonLabel position="floating">Height</IonLabel>
-                <IonInput id="height"></IonInput>
+                <IonInput ref={height}></IonInput>
               </IonItem>
             </IonCol>
           </IonRow>
           <IonRow>
             <IonCol className="ion-text-left">
-              <IonButton>
+              <IonButton onClick={()=>calculateBMI()}>
                 <IonIcon slot="start" icon={calculatorSharp}></IonIcon>Calculate
               </IonButton>
             </IonCol>
