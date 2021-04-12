@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {useRef,useState} from 'react';
 import {
   IonApp,
   IonContent,
@@ -13,8 +13,9 @@ import {
   IonItem,
   IonButton,
   IonIcon,
+  IonCardContent,
 } from "@ionic/react";
-import { calculatorSharp, refreshSharp } from "ionicons/icons";
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -32,10 +33,14 @@ import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
 const App: React.FC = () => {
+  //setting up state for BMI
+  const [calculatedBMI,setCalculatedBMI] = useState<number>();//TS way of configuring state
+
   const height = useRef<HTMLIonInputElement>(null);//supports generics, same as of java
   const weight = useRef<HTMLIonInputElement>(null);
   const handleRefresh = () => {
-    
+    height.current!.value='';
+    weight.current!.value='';
   };
   const calculateBMI=()=>{
     const enteredHeight = height.current?.value;//special syntax of typescript
@@ -46,8 +51,7 @@ const App: React.FC = () => {
     return;
 
     const bmi = +enteredWeight/(+enteredHeight* +enteredHeight);
-    console.log(bmi);
-    console.log('After changes');
+    setCalculatedBMI(bmi);
   }
   return (
     <IonApp>
@@ -74,21 +78,17 @@ const App: React.FC = () => {
               </IonItem>
             </IonCol>
           </IonRow>
-          <IonRow>
-            <IonCol className="ion-text-left">
-              <IonButton onClick={()=>calculateBMI()}>
-                <IonIcon slot="start" icon={calculatorSharp}></IonIcon>Calculate
-              </IonButton>
-            </IonCol>
-            <IonCol className="ion-text-right">
-              <IonButton>
-                <IonIcon slot="start" icon={refreshSharp}></IonIcon>Reset
-              </IonButton>
+         
+          {
+            calculatedBMI &&
+            <IonRow>
+            <IonCol>
+              <IonCardContent>
+                <h2>{calculatedBMI}</h2>
+              </IonCardContent>
             </IonCol>
           </IonRow>
-          <IonRow>
-            <IonCol></IonCol>
-          </IonRow>
+          }
         </IonGrid>
       </IonContent>
     </IonApp>
